@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{% static "css/style.css" %}">
+</head>
+<body>
+ {% comment %} we are using django filter to get the dynamic routing {% endcomment %}
+ <!-- Profile Header -->
+ <section class="profile-header">
+	<div class="container text-center">
+			<img src={{ student.student_profile.profile_picture.url }} alt="Profile Picture">
+			{% comment %} <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMS3wbH84PsWS_j9jQ9r7UsHCw88OOlF-UCQ&s" alt="Profile Picture"> {% endcomment %}
+			<h1>{{ student.first_name }} {{ student.last_name }}</h1>
+			<p>
+					{% for program in student.program_set.all %}
+							{{ program.courses }} Student | Cohort 2023
+					{% endfor %} 
+			</p>
+			<span class="badge badge-custom">{{ student.student_profile.rating }} Rating</span>
+		
+	</div>
+</section>
+
+<!-- Profile Content -->
+<section class="profile-content">
+	<div class="container">
+			<div class="row">
+					<!-- About the Student -->
+					<div class="col-md-8">
+							<div class="card p-4">
+									<h5>About {{ student.first_name }}</h5>
+									<p>
+											{{ student.first_name }} {{ student.last_name }} is {{ student.student_profile.bio }}
+									</p>
+									<p>
+											Date of Birth: {{ student.student_profile.date_of_birth|date:"jS F Y" }} <br>
+											Address: {{ student.student_profile.address }} <br>
+											Joined: {{ student.student_profile.date_join|date:"F Y"  }}
+											
+									</p>
+									<button class="btn btn-custom">Send Message</button>
+							</div>
+					</div>
+
+					<!-- Related Students -->
+					<div class="col-md-4">
+							<div class="card p-4">
+									<h5>Related Students (Same Cohort)</h5>
+									<ul class="list-unstyled">
+											{% for member in cohort_members %}
+													{% if student.id != member.id %}
+													<li class="d-flex align-items-center mb-3">
+															<img src={{ member.student_profile.profile_picture.url }} alt="Student" class="related-student-img">
+															<div class="ms-3">
+																	<h6 class="mb-0">{{ member.first_name }}  {{ member.last_name }}</h6>
+																	{% for program in member.program_set.all %}
+																			<small>{{ program.courses }}</small>
+																	{% endfor %}
+															</div>
+													</li>
+													{% endif %}
+											{% endfor %}
+									</ul>
+							</div>
+					</div>
+			</div>
+
+			<!-- Projects Section -->
+			<div class="row mt-4">
+					<div class="col-md-8">
+							
+					</div>
+
+					<!-- Follow Me Section -->
+					<div class="col-md-4">
+							<div class="card p-4">
+									<h5>Follow Me</h5>
+									<div class="follow-links">
+											<a href="#"><i class="fab fa-facebook-f"></i></a>
+											<a href="#"><i class="fab fa-twitter"></i></a>
+											<a href="#"><i class="fab fa-linkedin-in"></i></a>
+											<a href="#"><i class="fab fa-instagram"></i></a>
+									</div>
+							</div>
+					</div>
+			</div>
+	</div>
+</section>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
