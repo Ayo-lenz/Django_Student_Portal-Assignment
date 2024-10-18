@@ -20,7 +20,7 @@
 			<h1>{{ student.first_name }} {{ student.last_name }}</h1>
 			<p>
 					{% for program in student.program_set.all %}
-							{{ program.courses }} Student | Cohort 2023
+							{{ program.courses }} Student | {{cohort_group.name}}
 					{% endfor %} 
 			</p>
 			<span class="badge badge-custom">{{ student.student_profile.rating }} Rating</span>
@@ -52,7 +52,9 @@
 					<!-- Related Students -->
 					<div class="col-md-4">
 							<div class="card p-4">
-									<h5>Related Students (Same Cohort)</h5>
+								{% if cohort_group %}
+								<h5>Related Students : {{cohort_group.name}}</h5>
+								{% endif %}
 									<ul class="list-unstyled">
 											{% for member in cohort_members %}
 													{% if student.id != member.id %}

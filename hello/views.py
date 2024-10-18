@@ -6,12 +6,32 @@ from .models import Student, Student_Profile, Program, CohortGroup
 
 
 # we want to learn about django template instead of using httpresponse we can return our html
+# def home(request):
+#   student_list = Student.objects.all()  # Retrieve all students
+  
+#   # Create a dictionary to store each student's cohort group(s)
+#   student_cohort_groups = {student.cohort_groups.all() for student in student_list}
+  
+#   context = {
+#       "students": student_list,
+#       "student_cohort_groups": student_cohort_groups  # Pass the student-cohort mapping
+#   }
+#   print(student_cohort_groups)
+#   return render(request, 'html/index.html', context)
+
 def home(request):
-  student_list = Student.objects.all()
+  student_list = Student.objects.all()  # Retrieve all students
+  
+  # Attach cohort groups to each student object as a custom attribute
+  for student in student_list:
+    student.cohort_groups_list = student.cohort_groups.all()
+  
   context = {
-    "students": student_list
+    "students": student_list,  # Now, each student has an attribute 'cohort_groups_list'
   }
+  
   return render(request, 'html/index.html', context)
+
 
 
 def school(request):
@@ -56,6 +76,7 @@ def profile_view(request, id):
   # Pass the data to the template
   context = {
     "student": student,
+    'cohort_group': cohort_group,
     "cohort_members": cohort_members,
   }
   return render(request, 'html/profile.html', context)

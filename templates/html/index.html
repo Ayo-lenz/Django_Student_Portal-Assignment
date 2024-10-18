@@ -55,8 +55,8 @@
             </td>
             <td>{{ student.first_name }} {{ student.last_name }}</td>
             <td>
-              {% for cohort in student.cohortgroup_set.all %}
-              {{ cohort.name }}
+              {% for cohort_group in student.cohort_groups_list  %}
+                {{ cohort_group.name }}
               {% endfor %}
             </td>
             <td>
@@ -68,7 +68,7 @@
             <td>{{ student.student_profile.date_join|date:"Y-m-d" }}</td>
             <td>{{ student.student_profile.rating }}</td>
             <td>
-              <a href={% url "profile" student.id %} class="btn btn-sm btn-outline-primary">
+              <a href={% url "profile" student.id %} class="btn btn-sm btn-outline-primary" target='_blank'>
                 <i class="fas fa-eye"></i> View
               </a>
             </td>
