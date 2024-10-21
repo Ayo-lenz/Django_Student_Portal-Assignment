@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Student, Student_Profile, Program, CohortGroup
 
 
@@ -21,13 +22,24 @@ from .models import Student, Student_Profile, Program, CohortGroup
 
 def home(request):
   student_list = Student.objects.all()  # Retrieve all students
+
+  paginator = Paginator(student_list, 5)  # 10 students per page
+
+  page_number = request.GET.get('page')
+  try:
+    students_page = paginator.page(page_number)
+  except PageNotAnInteger:
+    students_page = paginator.page(1)
+  except EmptyPage:
+    students_page = paginator.page(paginator.num_pages)
   
-  # Attach cohort groups to each student object as a custom attribute
-  for student in student_list:
+  # Attach cohort groups to each student object as a custom attribute which can also be done on the template
+  for student in students_page:
     student.cohort_groups_list = student.cohort_groups.all()
   
   context = {
-    "students": student_list,  # Now, each student has an attribute 'cohort_groups_list'
+    #"students": student_list, # Now, each student has an attribute 'cohort_groups_list'
+    "students_page": students_page
   }
   
   return render(request, 'html/index.html', context)

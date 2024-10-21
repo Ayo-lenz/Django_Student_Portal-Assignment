@@ -43,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for student in students %}
+          {% for student in students_page %}
           <tr>
             <td>
               {% if student.student_profile.profile_picture %}
@@ -64,7 +64,7 @@
               {{ program.courses }}{% if not forloop.last %}, {% endif %}
               {% endfor %}
             </td>
-            <td><span class="badge bg-success text-white">Online Exam</span></td>
+            <td><span class="badge bg-success text-white">{{student.status|yesno:'active,inactive'}}</span></td>
             <td>{{ student.student_profile.date_join|date:"Y-m-d" }}</td>
             <td>{{ student.student_profile.rating }}</td>
             <td>
@@ -79,6 +79,24 @@
       </table>
     </div>
   </section>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if students_page.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ students_page.previous_page_number }}">previous</a>
+      {% endif %}
+  
+      <span class="current">
+        Page {{ students_page.number }} of {{ students_page.paginator.num_pages }}.
+      </span>
+  
+      {% if students_page.has_next %}
+        <a href="?page={{ students_page.next_page_number }}">next</a>
+        <a href="?page={{ students_page.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
 
   <!-- Add User Modal -->
   <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
