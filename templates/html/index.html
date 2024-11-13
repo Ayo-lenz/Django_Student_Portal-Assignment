@@ -22,7 +22,7 @@
   <section class="filter-section py-3 bg-light">
     <div class="container text-end">
       <!-- Button to trigger modal -->
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add Now</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New</button>
     </div>
   </section>
 
@@ -39,7 +39,7 @@
             <th>Status</th>
             <th>Date Joined</th>
             <th>Rating</th>
-            <th>Actions</th>
+            <th colspan="3" class='text-center'>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -68,10 +68,23 @@
             <td>{{ student.student_profile.date_join|date:"Y-m-d" }}</td>
             <td>{{ student.student_profile.rating }}</td>
             <td>
-              <a href={% url "profile" student.id %} class="btn btn-sm btn-outline-primary" target='_blank'>
+              <a href={% url "profile" slug=student.slug %} class="btn btn-sm btn-outline-primary" target='_blank'>
                 <i class="fas fa-eye"></i> View
               </a>
             </td>
+            <td>
+
+              <span class="px-2"><a href="#" class=" text-primary text-decoration-none">
+                <i class="fas fa-edit"> </i> Edit</a>
+              </span>
+            </td>
+            <td>
+              <span><a href="{% url 'delete' student.id %}" class=" text-danger text-decoration-none">
+                <i class="fas fa-trash"> </i> Delete</a>
+              </span>
+            </td>
+                  
+              
           </tr>
           {% endfor %}
           <!-- Add more rows as needed -->
@@ -80,20 +93,20 @@
     </div>
   </section>
 
-  <div class="pagination">
-    <span class="step-links">
+  <div class="d-flex justify-content-center mt-5">
+    <span class="step-links bg-light border fs-3 px-3 py-2">
       {% if students_page.has_previous %}
-        <a href="?page=1">&laquo; first</a>
-        <a href="?page={{ students_page.previous_page_number }}">previous</a>
+        <a href="?page=1" class="text-decoration-none">&laquo; first</a>
+        <a href="?page={{ students_page.previous_page_number }}" class="text-decoration-none">previous</a>
       {% endif %}
   
-      <span class="current">
+      <span class="current ">
         Page {{ students_page.number }} of {{ students_page.paginator.num_pages }}.
       </span>
   
       {% if students_page.has_next %}
-        <a href="?page={{ students_page.next_page_number }}">next</a>
-        <a href="?page={{ students_page.paginator.num_pages }}">last &raquo;</a>
+        <a href="?page={{ students_page.next_page_number }}" class="text-decoration-none">next</a>
+        <a href="?page={{ students_page.paginator.num_pages }}" class="text-decoration-none">last &raquo;</a>
       {% endif %}
     </span>
   </div>
@@ -108,15 +121,28 @@
         </div>
         <div class="modal-body">
           <!-- Add User Form -->
-          <form action="/submit-user" method="post">
+          <form action="{% url 'student' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             <div class="mb-3">
               <label for="profileImage" class="form-label">Profile Image URL</label>
-              <input type="text" class="form-control" id="profileImage" name="profileImage"
+              <input type="file" class="form-control" id="profileImage" name="profileImage"
                 placeholder="Enter Profile Image URL">
             </div>
             <div class="mb-3">
-              <label for="fullName" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter Full Name">
+              <label for="fullName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name">
+            </div>
+            <div class="mb-3">
+              <label for="fullName" class="form-label">last Name</label>
+              <input type="text" class="form-control" id="lasttName" name="lastName" placeholder="Enter last Name">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" class="form-control" id="email" name="email" placeholder="Email address">
+            </div>
+            <div class="mb-3">
+              <label for="dob" class="form-label">Date of birth</label>
+              <input type="date" class="form-control" id="dob" name="dob">
             </div>
             <div class="mb-3">
               <label for="cohort" class="form-label">Cohort</label>
@@ -127,12 +153,18 @@
               <input type="text" class="form-control" id="program" name="program" placeholder="Enter Program">
             </div>
             <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <textarea type="text" class="form-control" id="address" name="address" placeholder="Enter your address">
+              </textarea>
+            </div>
+            <div class="mb-3">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea type="text" class="form-control" id="bio" name="bio" placeholder="Enter your bio">
+              </textarea>
+            </div>
+            <div class="mb-3">
               <label for="status" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status">
-                <option value="online">Online Exam</option>
-                <option value="class">Class Exam</option>
-                <option value="missed">Missed Exam</option>
-              </select>
+              <input type="checkbox" name="class" value="true">
             </div>
             <div class="mb-3">
               <label for="dateJoined" class="form-label">Date Joined</label>

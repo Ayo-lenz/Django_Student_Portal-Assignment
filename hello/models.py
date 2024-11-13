@@ -1,15 +1,30 @@
 from django.db import models
-
+from django.utils.text import slugify
+import random
+import string
 # Create your models here.
 
 class Student(models.Model):
   username = models.CharField(max_length=100)
+  slug = models.SlugField(unique=True, blank=True, editable=False)
   first_name = models.CharField(max_length=200)
   last_name = models.CharField(max_length=200)
+  email = models.EmailField(max_length=250,null=True, default='examples@gmail.com')
   status = models.BooleanField(default=True)
+  
+
+  class Meta:
+    ordering = ['first_name']
+
 
   def __str__(self):
     return f"{self.first_name} {self.last_name}"
+  
+  def save(self,*args, **kwargs ):
+    if not self.slug:
+      student_slug_num_gen  = "".join(random.choices(string.digits,k=9))
+      self.slug = slugify(f"{self.first_name}-{self.last_name}-{student_slug_num_gen}")
+    super().save(*args, **kwargs)
 
 
 

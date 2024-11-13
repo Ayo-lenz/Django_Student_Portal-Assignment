@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Student, Student_Profile, Program, CohortGroup
 
@@ -25,7 +25,7 @@ def home(request):
 
   paginator = Paginator(student_list, 5)  # 10 students per page
 
-  page_number = request.GET.get('page')
+  page_number = request.GET.get('page') # is used to retrieve the value of the page parameter from the URL query string
   try:
     students_page = paginator.page(page_number)
   except PageNotAnInteger:
@@ -55,7 +55,7 @@ def school(request):
 # #    return HttpResponse(f"<h1>This is {unique}'s profile page</h1>")
 #    return render(request, 'html/profile.html', {'profile': unique})
 
-def profile_view(request, id):
+def profile_view(request, slug):
   # profile = username  # or fetch profile from the database
   # if len(profile) < 6:
   #     profile_exists = False
@@ -71,7 +71,7 @@ def profile_view(request, id):
     # Use prefetch_related for the reverse relationship, assuming `related_name='cohort_groups'`
   student = get_object_or_404(
     Student.objects.prefetch_related('cohort_groups'),  # Adjust based on the actual related_name
-    id=id
+    slug=slug
   )
 
   # Retrieve the first cohort group if it exists
@@ -95,3 +95,61 @@ def profile_view(request, id):
 
 
 # Create your views here.
+
+
+def update_student(request):
+  if request.method == 'POST':
+    profile_picture = request.FILES['profileImage']
+    first_name = request.POST['firstName']
+    email = request.POST.get('email')
+    last_name = request.POST['lastName']
+    address = request.POST['address']
+    name = request.POST['cohort']
+    courses = request.POST['program']
+    status = request.POST.get('status') == 'true'
+    date_join = request.POST['dateJoined']
+    rating = request.POST['rating']
+    date_of_birth = request.POST['dob']
+    bio = request.POST['bio']
+
+
+    # Create the Student instance and save it first
+    student = Student(first_name=first_name, last_name=last_name, email=email, status=status)
+    student.save()
+
+    # Associate the Student_Profile with the Student
+    student_profile = Student_Profile(
+      student=student,  # Link the Student_Profile to Student
+      profile_picture=profile_picture,
+      date_join=date_join,
+      rating=rating,
+      address=address,
+      date_of_birth=date_of_birth,
+      bio = bio
+    )
+    student_profile.save()
+
+    # Associate the Program with the Student
+    program = Program(
+        student=student,  # Link the Program to Student
+        courses=courses
+    )
+    program.save()
+
+    # Create the CohortGroup and associate it with the Student
+    cohort, created = CohortGroup.objects.get_or_create(name=name)
+    cohort.students.add(student)  # Add the student to the cohort
+
+    return redirect('home')
+
+  return render(request, 'html/index.html')
+
+
+def delete(request, id):
+  student = get_object_or_404(Student, pk=id)
+  student.delete()
+
+  return redirect('home')
+
+  return render(request, 'html/index.html')
+

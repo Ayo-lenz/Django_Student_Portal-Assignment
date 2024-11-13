@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'web_project.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        'NAME': 'school_management_portal',
+        'NAME': 'new_portal',
         'USER': 'Ayolenz',
         'PASSWORD': 'k1k2k3k4k5',
         'HOST':  'localhost'

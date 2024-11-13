@@ -45,7 +45,10 @@
 											Joined: {{ student.student_profile.date_join|date:"F Y"  }}
 											
 									</p>
-									<button class="btn btn-custom">Send Message</button>
+									<button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#exampleModal">
+										Send Message
+									</button>
+									
 							</div>
 					</div>
 
@@ -72,6 +75,65 @@
 									</ul>
 							</div>
 					</div>
+			</div>
+			{% comment %} modal to send email {% endcomment %}
+			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="exampleModalLabel">Send message</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form id="contactForm" method="POST">
+
+								{% csrf_token %}
+								<div class="form-floating">
+									<label for="name">Name</label>
+									<input
+										class="form-control"
+										id="name"
+										name='name'
+										type="text"
+										placeholder="Enter your name..."
+										data-sb-validations="required"
+									/>
+								</div>
+								<br>
+								<div class="form-floating">
+									<label for="email">Email address</label>
+									<input
+										class="form-control"
+										id="email"
+										name='email'
+										type="email"
+										placeholder="Enter your email..."
+										data-sb-validations="required,email"
+									/>
+									
+								</div>
+								<br>
+								<div class="form-floating">
+									<label for="message">Message</label>
+									<textarea
+										class="form-control"
+										id="message"
+										placeholder="Enter your message here..."
+										style="height: 12rem"
+										data-sb-validations="required"
+										name='message'
+									></textarea>
+									
+								</div>								
+							</form>
+						
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary">Send</button>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<!-- Projects Section -->

@@ -1,17 +1,18 @@
 from django.contrib import admin
 from .models import Student,Program,Student_Profile,CohortGroup
+import random
+import string
 
 # Register your models here.
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-  list_display = ['username', 'first_name','last_name','status']
-  # def get_cohort(self, obj):
-  #   cohort_group = obj.cohortgroup_set.all() 
-  #   return ", ".join([cohort.name for cohort in cohort_group])
+  list_display = ['username', 'first_name','last_name','status', 'slug']
+  readonly_fields = ('slug', )
 
-  #     # Optional: Add a short description for the method (displayed as column title)
-  # get_cohort.short_description = 'Cohort'
+  #student_slug_num_gen  = "".join(random.choices(string.digits,k=9))
+  #prepopulated_fields = {'slug': 'first_name'-'last_name'-f"{student_slug_num_gen}"}
 
+  #prepopulated_fields = {"slug": ("first_name", "last_name")}
 
 
 
