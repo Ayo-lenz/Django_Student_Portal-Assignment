@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from django.contrib import messages
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +33,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# for Oauth
+SITE_ID = 2
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,8 +43,34 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hello'
+    'hello',
+    # for OAuth providers
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 ]
+
+# for OAuth
+SOCIALACCOUNT_PROVIDERS = {
+  'google': {
+    'SCOPE': [
+      'profile',
+      'email'
+    ],
+    'AUTH_PARAMS': {'access_type': 'online'}
+  },
+
+  'facebook': {
+    'SCOPE': [
+      'profile',
+      'email'
+    ],
+    'AUTH_PARAMS': {'access_type': 'online'}
+  }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'web_project.urls'
@@ -142,3 +174,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = BASE_DIR / 'student'
 
 MEDIA_URL = '/files/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'johnlenzvictor@gmail.com'
+EMAIL_HOST_PASSWORD = 'tpzvkagfkhqwgwvr'
+DEFAULT_FROM_EMAIL = 'johnlenzvictor@gmail.com'
+
+# for django messages with bootstrap
+MESSAGE_TAGS = {
+  messages.ERROR : 'alert-danger',
+  messages.SUCCESS : 'alert-success',
+  messages.WARNING : 'alert-warning',
+  messages.INFO : 'alert-info'
+}
+
+
+# AUTHENTICATION FOR OAuth
+AUTHENTICATION_BACKENDS = (
+  'django.contrib.auth.backends.ModelBackend',
+  'allauth.account.auth_backends.AuthenticationBackend'
+)
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

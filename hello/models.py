@@ -57,13 +57,23 @@ class Program(models.Model):
 
 
 
+from django.db import models
 
+# Create your models here.
+
+
+cohort_names = [
+  ('Cohort 1', 'Cohort 1'),
+  ('Cohort 2', 'Cohort 2'),
+  ('Cohort 3', 'Cohort 3'),
+]
 
 
 
 class CohortGroup(models.Model):
-  name = models.CharField(max_length=200)
+  name = models.CharField(max_length=200, choices=cohort_names)
   date_join = models.DateTimeField(auto_now_add=True)
   students = models.ManyToManyField(Student, related_name='cohort_groups')
   def __str__(self):
     return f"{self.name}"
+  
